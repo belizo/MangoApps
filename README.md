@@ -50,7 +50,7 @@ They want opposite things, so **confirmation is opt-in per update**. By default 
 I tested beyond the happy path, both by hand and with an automated headless test (22 checks):
 
 ```
-npm i jsdom && node tests/smoke.js
+npm i jsdom && node smoke.js
 ```
 
 It covers:
