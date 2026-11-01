@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Summit Updates – prototype</title>
+<style>
+:root{--side:#12643c;--green:#0f7a4a;--green-d:#0b5e38;--tint:#e3f3ea;--orange:#f6921e;--bg:#f4f5f6;--card:#fff;--ink:#1f2933;--mute:#5d6872;--line:#e3e6e9;--red:#b83227;--red-t:#fde8e6;--amb:#8a5a00;--amb-t:#fff1d6}
+@media(prefers-color-scheme:dark){:root{--bg:#14181b;--card:#1d2226;--ink:#e8ecef;--mute:#9aa5ae;--line:#2c343a;--tint:#173a29;--red-t:#42201c;--amb-t:#40320f;--amb:#f2c35c;--green:#3dbb7e;--red:#ff8a7d}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.45 "Inter","Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:var(--side);color:#fff;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));display:flex;gap:10px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.logo{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
+.logo i{width:20px;height:20px;border-radius:50% 50% 50% 8px;background:var(--orange)}
+.sw{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:13px}
+.sw button,.sw select{font:inherit;border:1px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer}
+.sw button[aria-pressed=true]{background:#fff;color:var(--side);font-weight:600}
+.sw select option{color:#000}
+main{max-width:1000px;margin:0 auto;padding:16px}
+.phone{max-width:420px;margin:0 auto;background:var(--bg);border:1px solid var(--line);border-radius:18px;overflow:hidden;min-height:78vh;display:flex;flex-direction:column}
+@media(max-width:480px){main:has(.phone){padding:0}.phone{border:0;border-radius:0}}
+.phone .in{padding:16px;flex:1}
+.nav{position:sticky;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;font:inherit;font-weight:600;border:0;background:none;color:var(--mute);padding:14px 4px;min-height:52px;cursor:pointer;border-top:3px solid transparent}
+.nav button[aria-current=true]{color:var(--green);border-top-color:var(--green)}
+.badge{background:var(--orange);color:#1f2933;border-radius:99px;font-size:12px;padding:1px 7px;margin-left:4px}
+h1{font-size:22px;margin:0}h2{font-size:15px;margin:18px 0 8px}
+.sub{color:var(--mute);margin:2px 0 14px;font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.card.need{border-left:5px solid var(--orange)}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--tint);color:var(--green);white-space:nowrap}
+.pill.red{background:var(--red-t);color:var(--red)}.pill.amb{background:var(--amb-t);color:var(--amb)}.pill.gray{background:var(--line);color:var(--mute)}
+.btn{font:inherit;font-weight:600;border:0;border-radius:10px;padding:10px 16px;min-height:44px;background:var(--green);color:#fff;cursor:pointer}
+.btn:hover{filter:brightness(.92)}.btn.out{background:transparent;color:var(--green);border:1.5px solid var(--green)}.btn.sm{min-height:34px;padding:4px 12px;font-size:14px}
+.btn.ack{margin-top:10px;min-height:40px;padding:8px 18px;font-size:15px}
+.btn.done{background:var(--tint);color:var(--green);border:1.5px solid var(--green);cursor:default;animation:pop .3s}
+.btn.done:hover{filter:none}
+.card.need.fin{border-left-color:var(--green)}
+.card.fin{transition:opacity .4s}
+.drow{display:flex;align-items:center;gap:12px;margin-top:10px}.drow .link{padding:0}
+.btn.wide{width:100%;margin-top:12px;font-size:17px;min-height:52px}
+@keyframes pop{0%{transform:scale(.92)}60%{transform:scale(1.05)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.btn.done{animation:none}}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--orange);display:inline-block;margin-right:7px}
+.t{font-weight:700}.m{color:var(--mute);font-size:13px}
+.body{margin:8px 0 0;white-space:pre-wrap}.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--mute)}
+.link{background:none;border:0;color:var(--green);font:inherit;font-weight:600;padding:8px 0 0;cursor:pointer}
+.ok{text-align:center;padding:26px 14px}.ok b{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--tint);color:var(--green);font-size:26px;margin:0 auto 8px}
+.empty{text-align:center;color:var(--mute);padding:22px 12px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:10px 0 6px}.bar b{display:block;height:100%;background:var(--green)}
+.kpis{display:flex;gap:10px;margin:14px 0}.kpis .card{flex:1;margin:0}.kpis strong{font-size:26px;display:block}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:inherit;font-size:14px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;min-height:38px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:10px 0}.tabs button{font:inherit;border:0;background:none;padding:8px 12px;color:var(--mute);cursor:pointer;border-bottom:3px solid transparent}.tabs button[aria-selected=true]{color:var(--green);font-weight:700;border-color:var(--green)}
+.person{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid var(--line)}.person:last-child{border:0}
+input[type=text],textarea,input[type=search]{width:100%;font:inherit;padding:11px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink)}
+textarea{min-height:110px;resize:vertical}
+label.f{display:block;font-weight:700;font-size:14px;margin:16px 0 6px}
+.sw2{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer}.sw2 input{width:22px;height:22px;margin-top:2px;accent-color:var(--green)}
+.err{color:var(--red);font-size:14px;min-height:20px;margin-top:10px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:20;overflow:auto;padding:12px}
+#modal[hidden]{display:none}
+.sheet{background:var(--bg);max-width:860px;margin:0 auto;border-radius:16px;padding:18px;display:grid;grid-template-columns:1fr 340px;gap:20px}
+@media(max-width:760px){.sheet{grid-template-columns:1fr}}
+.pvl{background:var(--bg);border:1px dashed var(--line);border-radius:14px;padding:12px}
+#toast{position:fixed;bottom:calc(76px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);background:var(--side);color:#fff;padding:11px 18px;border-radius:12px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:30;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+footer{text-align:center;font-size:12px;color:var(--mute);padding:8px 8px 20px}footer button{background:none;border:0;color:var(--green);cursor:pointer;font:inherit;text-decoration:underline}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo"><i></i>Summit Updates</span>
+  <div class="sw" role="group" aria-label="Prototype: view as">
+    <span>View as</span>
+    <button data-role="employee">Employee</button><button data-role="store">Store manager</button><button data-role="ops">Ops manager</button>
+    <select id="who" aria-label="Which employee"></select>
+  </div>
+</header>
+<main id="app"></main>
+<div id="modal" hidden role="dialog" aria-modal="true" aria-label="Post an update"></div>
+<footer>Prototype · mock data saved in your browser · <button id="reset">Reset demo data</button></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const STORES=["Downtown","Eastside","Northgate","Lakeview","Harbor"];
+const FN=["Alex","Priya","Marcus","Dana","Sam","Tia","Jon","Mei","Luis","Hannah","Omar","Nina","Ben","Zoe","Ravi","Maya"];
+const LN=["Chen","Nair","Lee","Ortiz","Brooks","Walker","Reyes","Tanaka","Vega","Cole"];
+const EMPS=Array.from({length:40},(_,i)=>({id:"e"+i,name:FN[i%16]+" "+LN[(3*i+Math.floor(i/16))%10],store:STORES[i%5]}));
+const USERS={store:{name:"Rachel Kim",stores:["Downtown"]},ops:{name:"Michael Torres",stores:STORES}};
+const DAY=864e5,pad=n=>String(n).padStart(2,"0");
+const ymd=d=>{d=new Date(d);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
+const today=()=>ymd(Date.now());
+const dl=s=>new Date(s+"T12:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"});
+const sd=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KEY="summit-updates-v2";
+function seed(){
+  const n=Date.now(),A=(id,title,body,stores,imp,due,ago,author)=>({id,title,body,stores,important:imp,due,created:n-ago,author});
+  const anns=[
+   A("a1","New ladder and forklift safety rules","Starting this week, stockroom ladders must be footed by a second person. Forklifts are for certified staff only.\n\nThe full checklist is on the back-office board.",[...STORES],true,ymd(n+2*DAY),DAY,"Michael Torres"),
+   A("a2","Updated returns policy","Returns without a receipt over $50 now need manager approval. After 30 days, store credit only.",["Downtown","Eastside"],true,ymd(n-DAY),4*DAY,"Rachel Kim"),
+   A("a3","Holiday hours are posted","Extended hours begin Nov 20. Check the schedule board for your shifts.",[...STORES],false,"",2*DAY,"Michael Torres"),
+   A("a4","Harbor: back door alarm test Friday","The alarm will sound briefly around 8am. No action needed.",["Harbor"],false,"",5*36e5,"Michael Torres"),
+   A("a5","Break room fridge clean-out","Please take your food home by Friday. Anything left will be thrown out.",["Downtown"],false,"",3*DAY,"Rachel Kim")];
+  const recs={},mk=(id,e,ack)=>{(recs[id]=recs[id]||{})[e.id]={read:n-DAY/2,ack:ack?n-DAY/3:null}};
+  EMPS.forEach((e,i)=>{
+    if(i%3!=0)mk("a1",e,true);else if(i%2==0&&i>0)mk("a1",e,false);
+    if(["Downtown","Eastside"].includes(e.store)){if(i%4!=1)mk("a2",e,true);else if(i%2==1&&i>1)mk("a2",e,false)}
+    if(i%3==1)mk("a3",e,false);
+    if(e.store=="Downtown"&&i>0)mk("a5",e,false);
+  });
+  return {anns,recs,rem:{}};
+}
+let D;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+D=D||seed();
+let S={just:{},seen:{},role:"employee",emp:"e0",tab:"todo",mf:"follow",open:{},who:{},q:{},c:null};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}};
+const toast=m=>{const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),2600)};
+const aud=st=>EMPS.filter(e=>st.includes(e.store));
+const rec=(a,e)=>(D.recs[a]||{})[e]||{};
+const over=a=>a.important&&a.due&&a.due<today();
+const R=()=>S.role!="employee"?USERS[S.role]:null;
+
+/* ---------- shared card (employee feed + manager preview) ---------- */
+function card(a,me,need,reader){
+  const r=me?rec(a.id,me.id):{},open=need||S.open[a.id]||reader==="pv",fin=need&&S.just[a.id]&&!reader;
+  const rem=me&&D.rem[a.id]&&D.rem[a.id][me.id];
+  const flag=fin?`<span class="pill">✓ Confirmed</span>`:need?(over(a)?`<span class="pill red">Important · overdue</span>`:`<span class="pill amb">Important${a.due?" · confirm by "+dl(a.due):""}</span>`):a.important?`<span class="pill">✓ Confirmed</span>`:me&&S.seen[a.id]?`<span class="pill gray">Read</span>`:"";
+  return `<article class="card ${need?"need":""} ${fin?"fin":""}"><div class="row"><span class="t">${me&&!r.read&&!need?'<span class="dot" title="New"></span>':""}${esc(a.title||"Your title appears here")}</span>${flag}</div>
+  <div class="m">${esc(a.author)} · ${a.stores.length==5?"All stores":esc(a.stores.join(", "))} · ${sd(a.created)}${rem&&need?" · <b>Reminder from your manager</b>":""}</div>
+  <p class="body ${open?"":"clamp"}">${esc(a.body||"Your message appears here.")}</p>
+  ${!need&&!reader?`<button class="link" data-open="${a.id}">${open?"Show less":"Read more"}</button>`:""}
+  ${need&&!reader?(fin?`<div class="drow"><button class="btn done" disabled>✓ Confirmed</button><button class="link" data-undo="${a.id}">Undo</button></div>`:`<button class="btn ack" data-ack="${a.id}">I've read this</button>`):""}</article>`;
+}
+
+/* ---------- employee ---------- */
+function empView(){
+  const me=EMPS.find(e=>e.id==S.emp),mine=D.anns.filter(a=>a.stores.includes(me.store)).sort((a,b)=>b.created-a.created);
+  const pend=mine.filter(a=>a.important&&(!rec(a.id,me.id).ack||S.just[a.id])).sort((a,b)=>(a.due||"9").localeCompare(b.due||"9"));
+  const fresh=mine.filter(a=>!pend.includes(a)&&(!rec(a.id,me.id).read||S.seen[a.id])),np=pend.filter(a=>!S.just[a.id]).length;
+  const hr=new Date().getHours(),hi=hr<12?"Good morning":hr<17?"Good afternoon":"Good evening";
+  let h=`<h1>${hi}, ${esc(me.name.split(" ")[0])}</h1><p class="sub">${esc(me.store)} store</p>`;
+  if(S.tab=="todo"){
+    h+=pend.length?`<p class="t" style="margin:0 0 10px">${np==0?"All confirmed. Thank you!":np==1?"1 update needs a quick confirmation":np+" updates need a quick confirmation"}</p>`+pend.map(a=>card(a,me,true)).join(""):`<div class="card ok"><b>✓</b><div class="t">You're all caught up</div><div class="m">Nothing needs your confirmation.</div></div>`;
+    if(fresh.length)h+=`<h2>New for you</h2>`+fresh.map(a=>card(a,me,false)).join("");
+  }else h+=mine.length?mine.map(a=>card(a,me,pend.includes(a))).join(""):`<div class="card empty">No updates for ${esc(me.store)} yet.</div>`;
+  return `<div class="phone"><div class="in">${h}</div><nav class="nav" aria-label="Sections">
+   <button data-tab="todo" aria-current="${S.tab=="todo"}">To do${np?`<span class="badge">${np}</span>`:""}</button>
+   <button data-tab="all" aria-current="${S.tab=="all"}">All updates</button></nav></div>`;
+}
+
+/* ---------- manager ---------- */
+function stat(a){const sc=R().stores,t=aud(a.stores).filter(e=>sc.includes(e.store));
+  const done=t.filter(e=>a.important?rec(a.id,e.id).ack:rec(a.id,e.id).read);return{t,done,pend:t.filter(e=>!done.includes(e))}}
+function row(a){
+  const s=stat(a),pct=s.t.length?Math.round(100*s.done.length/s.t.length):0,open=S.open["m"+a.id],tab=S.who[a.id]||"not",q=(S.q[a.id]||"").toLowerCase();
+  const tag=!a.important?`<span class="pill gray">FYI</span>`:over(a)&&s.pend.length?`<span class="pill red">Overdue</span>`:s.pend.length?`<span class="pill amb">Waiting on ${s.pend.length}</span>`:`<span class="pill">✓ Everyone confirmed</span>`;
+  const stores=[...new Set(s.t.map(e=>e.store))];
+  const br=stores.length>1?`<div class="chips" style="margin-top:6px">${stores.map(st=>{const t=s.t.filter(e=>e.store==st),d=t.filter(e=>s.done.includes(e));return `<span class="pill ${d.length==t.length?"":"amb"}">${st} ${d.length}/${t.length}</span>`}).join("")}</div>`:"";
+  const list=(tab=="not"?s.pend:s.done).filter(e=>!q||e.name.toLowerCase().includes(q));
+  const st=e=>{const r=rec(a.id,e.id);return tab=="done"?(a.important?"Confirmed "+sd(r.ack):"Opened "+sd(r.read)):r.read?"Opened, not confirmed":"Hasn't opened it"};
+  const lastRem=Math.max(0,...Object.values(D.rem[a.id]||{}));
+  return `<article class="card"><div class="row"><span class="t">${esc(a.title)}</span>${tag}</div>
+   <div class="m">${esc(a.author)} · To ${a.stores.length==5?"all stores":esc(a.stores.join(", "))} · ${sd(a.created)}${a.important&&a.due?" · Confirm by "+dl(a.due):""}</div>
+   <div class="bar" role="progressbar" aria-label="${pct}% ${a.important?"confirmed":"opened"}" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><b style="width:${pct}%"></b></div>
+   <div class="row"><span class="m"><b>${s.done.length} of ${s.t.length}</b> ${a.important?"confirmed":"opened"}</span><button class="btn out sm" data-toggle="${a.id}" aria-expanded="${!!open}">${open?"Hide people":"See people"}</button></div>${br}
+   ${open?`<div class="tabs" role="tablist"><button role="tab" data-wt="${a.id}:not" aria-selected="${tab=="not"}">${a.important?"Not confirmed":"Not opened"} (${s.pend.length})</button><button role="tab" data-wt="${a.id}:done" aria-selected="${tab=="done"}">${a.important?"Confirmed":"Opened"} (${s.done.length})</button></div>
+    ${s.t.length>8?`<input type="search" id="q-${a.id}" data-q="${a.id}" placeholder="Search by name" value="${esc(S.q[a.id]||"")}">`:""}
+    ${list.length?list.map(e=>`<div class="person"><div><div>${esc(e.name)}</div><div class="m">${e.store} · ${st(e)}${tab=="not"&&D.rem[a.id]&&D.rem[a.id][e.id]?" · reminded":""}</div></div>${tab=="not"&&a.important?`<button class="btn out sm" data-r1="${a.id}:${e.id}">Remind</button>`:""}</div>`).join(""):`<div class="empty">${tab=="not"?"Nobody left. 🎉":"No one yet."}</div>`}
+    ${tab=="not"&&a.important&&s.pend.length>1?`<button class="btn wide" data-rall="${a.id}">Remind all ${s.pend.length}</button>`:""}
+    ${lastRem?`<p class="m">Last reminder ${new Date(lastRem).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"})}</p>`:""}`:""}</article>`;
+}
+function mgrView(){
+  const u=R(),all=D.anns.filter(a=>a.stores.some(s=>u.stores.includes(s))).sort((a,b)=>b.created-a.created);
+  const fu=a=>a.important&&stat(a).pend.length,imp=all.filter(a=>a.important);
+  const tot=imp.reduce((n,a)=>n+stat(a).t.length,0),dn=imp.reduce((n,a)=>n+stat(a).done.length,0);
+  let list=S.mf=="follow"?all.filter(fu).sort((a,b)=>(over(b)-over(a))||(a.due||"9").localeCompare(b.due||"9")):S.mf=="fyi"?all.filter(a=>!a.important):all;
+  const nf=all.filter(fu).length;
+  return `<div class="row"><div><h1>${esc(u.name)}</h1><p class="sub" style="margin:2px 0 0">${S.role=="ops"?"Operations manager · all 5 stores":"Store manager · "+u.stores[0]} · ${aud(u.stores).length} employees</p></div><button class="btn" data-post="1">+ Post an update</button></div>
+  <div class="kpis"><div class="card"><strong style="color:${nf?"var(--red)":"var(--green)"}">${nf}</strong><span class="m">important ${nf==1?"update needs":"updates need"} follow-up</span></div><div class="card"><strong>${tot?Math.round(100*dn/tot):100}%</strong><span class="m">of important updates confirmed</span></div></div>
+  <div class="chips" role="group" aria-label="Filter">${[["follow","Needs follow-up ("+nf+")"],["all","All ("+all.length+")"],["fyi","FYI only"]].map(([k,l])=>`<button class="chip" data-mf="${k}" aria-pressed="${S.mf==k}">${l}</button>`).join("")}</div><div style="height:12px"></div>
+  ${list.length?list.map(row).join(""):`<div class="card ok"><b>✓</b><div class="t">${S.mf=="follow"?"Nothing needs follow-up":"No updates here yet"}</div><div class="m">${S.mf=="follow"?"Every important update has been confirmed.":"Post your first update with the button above."}</div></div>`}`;
+}
+
+/* ---------- compose ---------- */
+function openCompose(){const u=R();S.c={title:"",body:"",stores:S.role=="store"?[...u.stores]:[],imp:false,days:3,err:""};modal();setTimeout(()=>{const t=document.getElementById("ct");t&&t.focus()},30)}
+const dueOf=c=>c.imp&&c.days?ymd(Date.now()+c.days*DAY):"";
+const draft=c=>({title:c.title,body:c.body,stores:c.stores.length?c.stores:["Your stores"],important:c.imp,due:dueOf(c),created:Date.now(),author:R().name});
+function modal(){
+  const m=document.getElementById("modal");m.hidden=!S.c;if(!S.c){document.body.style.overflow="";return}
+  document.body.style.overflow="hidden";const c=S.c,ops=S.role=="ops",n=aud(c.stores).length;
+  m.innerHTML=`<div class="sheet"><div><div class="row"><h1>Post an update</h1><button class="btn out sm" data-close="1">Cancel</button></div>
+  <label class="f" for="ct">Title</label><input type="text" id="ct" maxlength="80" placeholder="e.g. New opening procedure" value="${esc(c.title)}">
+  <label class="f" for="cb">Message</label><textarea id="cb" maxlength="600" placeholder="What changed, and what should people do?">${esc(c.body)}</textarea>
+  <label class="f">Who should see it?</label>${ops?`<div class="chips"><button class="chip" data-st="all" aria-pressed="${c.stores.length==5}">All stores</button>${STORES.map(s=>`<button class="chip" data-st="${s}" aria-pressed="${c.stores.includes(s)}">${s}</button>`).join("")}</div>`:`<div class="m">Your store: ${u0()} (store managers post to their own store)</div>`}
+  <label class="sw2" style="margin-top:16px"><input type="checkbox" id="ci" ${c.imp?"checked":""}><span><b>Ask employees to confirm they've read it</b><br><span class="m">Use for policy and safety updates. Everything else stays a quiet read with no prompt.</span></span></label>
+  ${c.imp?`<label class="f">Confirm by</label><div class="chips">${[["Tomorrow",1],["3 days",3],["1 week",7],["No deadline",0]].map(([l,d])=>`<button class="chip" data-days="${d}" aria-pressed="${c.days==d}">${l}</button>`).join("")}</div>`:""}
+  <div class="err" id="err" role="alert">${esc(c.err)}</div>
+  <button class="btn wide" data-submit="1">Post to ${n} ${n==1?"employee":"employees"}</button></div>
+  <div><h2 style="margin-top:56px">How employees will see it</h2><div class="pvl" id="pv">${pv()}</div></div></div>`;
+}
+const u0=()=>R().stores[0];
+const pv=()=>card(draft(S.c),null,S.c.imp,"pv");
+
+/* ---------- render + events ---------- */
+function render(){
+  document.querySelectorAll(".sw button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.role==S.role));
+  const sel=document.getElementById("who");sel.style.display=S.role=="employee"?"":"none";
+  sel.innerHTML=EMPS.map(e=>`<option value="${e.id}" ${e.id==S.emp?"selected":""}>${esc(e.name)} · ${e.store}</option>`).join("");
+  document.getElementById("app").innerHTML=S.role=="employee"?empView():mgrView();
+}
+const $=document;
+$.querySelector(".sw").addEventListener("click",e=>{const r=e.target.dataset.role;if(r){S.role=r;S.c=null;modal();render()}});
+$.getElementById("who").onchange=e=>{S.emp=e.target.value;S.tab="todo";S.just={};S.seen={};render()};
+$.getElementById("reset").onclick=()=>{D=seed();save();S.open={};S.who={};S.q={};render();toast("Demo data reset")};
+$.addEventListener("keydown",e=>{if(e.key=="Escape"&&S.c){S.c=null;modal()}});
+$.addEventListener("input",e=>{const t=e.target;
+  if(t.id=="ct"||t.id=="cb"){S.c[t.id=="ct"?"title":"body"]=t.value;$.getElementById("pv").innerHTML=pv()}
+  if(t.dataset.q){S.q[t.dataset.q]=t.value;render();const q=$.getElementById("q-"+t.dataset.q);q.focus();q.setSelectionRange(99,99)}
+  if(t.id=="ci"){S.c.imp=t.checked;modal();$.getElementById("ci").focus()}});
+$.addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+  if(d.tab){S.tab=d.tab;S.seen={};S.just={};render()}
+  if(d.open){const r=(D.recs[d.open]=D.recs[d.open]||{});if(!S.open[d.open]){r[S.emp]=r[S.emp]||{ack:null};r[S.emp].read=r[S.emp].read||Date.now()}S.open[d.open]=!S.open[d.open];S.seen[d.open]=1;save();render()}
+  if(d.ack){const r=(D.recs[d.ack]=D.recs[d.ack]||{});r[S.emp]={read:(r[S.emp]||{}).read||Date.now(),ack:Date.now()};S.just[d.ack]=1;save();render();toast("Thanks, confirmed ✓");const em=S.emp;setTimeout(()=>{if(S.emp==em&&S.just[d.ack]){delete S.just[d.ack];render()}},3500)}
+  if(d.undo){const r=D.recs[d.undo][S.emp];r.ack=null;delete S.just[d.undo];save();render();toast("Confirmation undone")}
+  if(d.mf){S.mf=d.mf;render()}
+  if(d.toggle){S.open["m"+d.toggle]=!S.open["m"+d.toggle];render()}
+  if(d.wt){const[i,t]=d.wt.split(":");S.who[i]=t;render()}
+  if(d.r1){const[i,p]=d.r1.split(":");(D.rem[i]=D.rem[i]||{})[p]=Date.now();save();render();toast("Reminder sent to "+EMPS.find(x=>x.id==p).name)}
+  if(d.rall){const a=D.anns.find(x=>x.id==d.rall),s=stat(a);D.rem[a.id]=D.rem[a.id]||{};s.pend.forEach(p=>D.rem[a.id][p.id]=Date.now());save();render();toast("Reminder sent to "+s.pend.length+" people")}
+  if(d.post)openCompose();
+  if(d.close){S.c=null;modal()}
+  if(d.st){const c=S.c;c.stores=d.st=="all"?(c.stores.length==5?[]:[...STORES]):c.stores.includes(d.st)?c.stores.filter(x=>x!=d.st):[...c.stores,d.st];c.err="";modal()}
+  if(d.days!=null&&S.c){S.c.days=+d.days;modal()}
+  if(d.submit){const c=S.c,t=c.title.trim(),bo=c.body.trim();
+    c.err=!t?"Add a title so people know what this is.":!bo?"Add a message.":!c.stores.length?"Choose at least one store.":"";
+    if(c.err){modal();return}
+    const a={id:"a"+Date.now(),title:t,body:bo,stores:[...c.stores],important:c.imp,due:dueOf(c),created:Date.now(),author:R().name};
+    D.anns.push(a);save();const n=aud(a.stores).length;S.c=null;modal();S.mf=a.important?"follow":"all";S.open={};render();toast("Posted to "+n+" employees in "+a.stores.length+(a.stores.length==1?" store":" stores"))}
+});
+render();
+</script>
+</body>
+</html>
